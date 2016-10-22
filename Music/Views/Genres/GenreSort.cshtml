@@ -1,0 +1,22 @@
+﻿GENRE SORT VIEW
+
+@model IEnumerable<Music.Models.Album>
+
+@{
+    ViewBag.Title = "GenreSort";
+}
+
+<h2>@ViewBag.header</h2>
+
+<table>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+
+        </tr>
+    }
+
+</table>

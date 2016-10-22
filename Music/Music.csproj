@@ -161,6 +161,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\music16c.pubxml" />
     <None Include="Properties\PublishProfiles\Music2000 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\musicappchrisheeneke - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\musicappjoshfriedman - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\musicappjoshfriedman - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -202,6 +203,7 @@
     <Content Include="Views\Genres\Create.cshtml" />
     <Content Include="Views\Genres\Index.cshtml" />
     <Content Include="Views\Artists\Details.cshtml" />
+    <Content Include="Views\Genres\GenreSort.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

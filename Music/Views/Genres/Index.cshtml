@@ -4,7 +4,7 @@
     ViewBag.Title = "Genre";
 }
 
-<h2>Index</h2>
+<h2>Genres</h2>
 
 <p>
     @Html.ActionLink("Create New Genre", "Create")
@@ -20,7 +20,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a href="/Genres/SortByGenre/@item.GenreID">@item.Name</a> 
             </td>
         </tr>
     }
