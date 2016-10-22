@@ -1,5 +1,4 @@
-﻿GENRE SORT VIEW
-
+﻿
 @model IEnumerable<Music.Models.Album>
 
 @{
@@ -13,7 +12,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                <a href="/Albums/Details/@item.GenreID">@Html.DisplayFor(modelItem => item.Title)</a>
             </td>
 
         </tr>
