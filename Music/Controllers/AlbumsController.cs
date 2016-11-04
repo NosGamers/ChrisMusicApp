@@ -14,7 +14,7 @@ namespace Music.Controllers
     {
         private MusicContext db = new MusicContext();
 
-        // GET: Albums
+        // GET: Albums-
         public ActionResult Index()
         {
             var albums = db.Albums.Include(a => a.Artist).Include(a => a.Genre);
