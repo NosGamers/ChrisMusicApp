@@ -2,25 +2,29 @@
 @{
     ViewData["Title"] = "Albums";
 }
-<h2>Albums</h2>
+<h2>Album List</h2>
+<div><a asp-action="Create" class="btn btn-danger">Add an Album</a></div>
 <br />
-<a class="btn btn-success btn-lg col-md-3" href="/Albums/Create">Add Album</a>
+<form class="form-inline">
+    <div class="form-group">
+        <input type="search" name="search" />
+    </div>
+    <button type="submit" class="btn btn-info btn-sm">Search your music</button>
+    @if (!string.IsNullOrEmpty(ViewBag.Search))
+    {
+        <a asp-action="Index" class="btn btn-sm btn-danger">Back to List</a>
+
+    }
+</form>
 <br />
-<br />
-<br />
-<div>
-    @using (Html.BeginForm())
-    { <p>@Html.TextBox("searchString") <input type="submit" value="Search" /></p> }
-</div>
 <table class="table">
-   
     <thead>
-        <tr>
-            <th>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.AlbumNameSortParam })</th>
-            <th>@Html.ActionLink("Artist", "Index", new { sortOrder = ViewBag.ArtistNameSortParam })</th>
-            <th>@Html.ActionLink("Genre", "Index", new { sortOrder = ViewBag.GenreNameSortParam })</th>
-            <th>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParam })</th>
-            <th>Likes</th>
+        <tr class="bg-primary">
+            <th>Title</th>
+            <th><a asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-sort="@ViewBag.ArtistSort" id="link">Artist</a></th>
+            <th><a asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-sort="@ViewBag.GenreSort" id="link">Genre</a></th>
+            <th><a asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-sort="@ViewBag.PriceSort" id="link">Price</a></th>
+            <th><a asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-sort="@ViewBag.LikesSort" id="link">Likes</a></th>
         </tr>
     </thead>
     @foreach (var album in Model)
@@ -31,15 +35,15 @@
             <td>@album.Genre.Name</td>
             <td>@album.Price</td>
             <td>@album.Likes</td>
-            <td> 
-                <form class="inline" asp-action="Likes" asp-route-id="@album.AlbumID" method="post">
-                    <button class="btn btn-sm btn-default" type="submit">Like</button>
-                    <a class="btn btn-default" asp-action="Details" asp-route-id="@album.AlbumID">Details</a>
-                    <a class="btn btn-default" asp-action="Edit" asp-route-id="@album.AlbumID">Edit</a>
-                    <a class="btn btn-default" asp-action="Delete" asp-route-id="@album.AlbumID">Delete</a>
-                </form>
-                </td>
+            <td>
+                <form asp-action="Like" asp-route-id="@album.AlbumID" class="inline">
+                    <button type="submit" class="btn btn-sm btn-default">Like</button>
+                </form>|
+                <a class="btn btn-sm btn-default" asp-controller="Playlists" asp-action="AddAlbum" asp-route-id="@album.AlbumID">Add to Playlist</a> |
+                <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@album.AlbumID">Details</a> |
+                <a class="btn btn-sm btn-default" asp-action="Edit" asp-route-id="@album.AlbumID">Edit</a> |
+                <a class="btn btn-sm btn-default" asp-action="Delete" asp-route-id="@album.AlbumID">Delete</a>
+            </td>
         </tr>
     }
-    </table>
-
+</table>

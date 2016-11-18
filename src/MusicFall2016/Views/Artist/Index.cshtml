@@ -1,24 +1,26 @@
 ﻿@model IEnumerable<MusicFall2016.Models.Artist>
-@{
-    ViewData["Title"] = "Artists";
-}
+
+@{ViewData["Title"] = "Artists"; }
+
 <h2>Artists</h2>
+
+<div><a asp-action="Create" class="btn btn-danger">Add Artist</a></div>
 <br />
-<a class="btn btn-success btn-lg col-md-3" href="/Artist/Create">Add Artist</a>
 <table class="table">
     <thead>
-        <tr>
-            <th>Artist</th>
+        <tr class="bg-primary">
+            <th>Name</th>
             <th>Bio</th>
-            <th></th>
         </tr>
     </thead>
-    @foreach (var Artist in Model)
+    @foreach (var artist in Model)
     {
         <tr>
-            <td>@Artist.Name</td>
-            <td>@Artist.Bio</td>
-            <td><a class="btn btn-default" asp-action="Details" asp-route-id="@Artist.ArtistID">Details</a></td>
+            <td>@artist.Name</td>
+            <td>@artist.Bio</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@artist.ArtistID">Details</a>
+            </td>
         </tr>
     }
 </table>

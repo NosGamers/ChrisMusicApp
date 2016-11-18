@@ -1,22 +1,30 @@
 ﻿@model MusicFall2016.Models.Artist
-@{
-    ViewBag.Title = "Details";
+
+@{ViewData["Title"] = "Details"; }
+
+<h2>Artist Details</h2>
+<div class="row">
+    <label class="col-md-2">Name:</label>
+    <div class="col-md-10">@Model.Name</div>
+</div>
+<div class="row">
+    <label class="col-md-2">Bio:</label>
+    <div class="col-md-10">@Model.Bio</div>
+</div>
+
+<h4><b>Albums:</b></h4>
+
+
+@foreach (var album in ViewBag.Albums)
+{
+    <tr>
+        <td>@album.Title</td>
+    </tr>
+    <br />
 }
-<h2> Artist Details</h2>
+
 <br />
-<p><b>Name:</b><blockquote>@Model.Name</blockquote></p>
-<p><b>Bio:</b><blockquote>@Model.Bio</blockquote></p>
-<table class="table">
-    <tbody>
-        <tr><td><b>Albums:</b></td></tr>
-        @foreach (var album in ViewBag.AlbumsList)
-        {
-            <tr><td><asp-controller="Artist" asp-action="Details" asp-route-id="@album.ArtistID">@album.Title</td></tr>
+<br />
 
-        }
-
-
-    </tbody>
-</table>
-<a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.ArtistID">Edit</a>
-<a class="btn btn-default" href="/Artist">Back To list</a>
+<a asp-action="Edit" asp-route-id="@Model.ArtistID" class="btn btn-primary btn-danger">Edit</a> &nbsp &nbsp
+<a asp-action="Index" class="btn btn-default">Back to list</a>

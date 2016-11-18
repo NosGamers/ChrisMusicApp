@@ -1,0 +1,24 @@
+﻿@model IEnumerable<MusicFall2016.Models.Playlist>
+
+<h2>Playlists for: @ViewBag.Username (Member since @ViewBag.Date.ToString("MMM yyyy"))</h2>
+<p>
+    <a class="btn btn-danger" asp-action="Create">Add Playlist</a>
+</p>
+<br />
+<table class="table">
+    <thead>
+        <tr class="bg-primary">
+            <th>Name</th>
+        </tr>
+    </thead>
+    @foreach (var playlist in Model)
+    {
+        <tr>
+            <td><a asp-action="Details" asp-route-id="@playlist.PlaylistID" class="playlistLinks">@playlist.Name</a></td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@playlist.PlaylistID" class="btn btn-default">Rename</a> |
+                <a asp-action="Delete" asp-route-id="@playlist.PlaylistID" class="btn btn-default">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

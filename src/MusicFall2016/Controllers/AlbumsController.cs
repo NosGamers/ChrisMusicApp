@@ -1,195 +1,189 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicFall2016.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
-
-// For 2more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MusicFall2016.Controllers
 {
     public class AlbumsController : Controller
     {
-        private readonly MusicDbContext _context;
+        private readonly MusicDbContext db;
 
         public AlbumsController(MusicDbContext context)
         {
-            _context = context;
+            db = context;
         }
-        // GET: /<controller>/
-        public IActionResult Index(string sortOrder, string searchString)
+        public IActionResult Index(string search, string sort)
         {
-            ViewBag.AlbumNameSortParam = string.IsNullOrEmpty(sortOrder) ? "album_name" : "";
-            ViewBag.ArtistNameSortParam = sortOrder == "artist_name" ? "name_artist" : "artist_name";
-            ViewBag.GenreNameSortParam = sortOrder == "genre_name" ? "name_genre" : "genre_name";
-            ViewBag.PriceSortParam = sortOrder == "price_amnt" ? "amnt_price" : "price_amnt";
-            var albums = from a in _context.Albums.Include(a => a.Artist).Include(a => a.Genre) select a;
-            if (!string.IsNullOrEmpty(searchString))
-            { albums = albums.Where(a => a.Title.ToUpper().Contains(searchString.ToUpper()) ||  a.Genre.Name.ToUpper().Contains(searchString.ToUpper()) || a.Artist.Name.ToUpper().Contains(searchString.ToUpper()));
-           
-            }
-            switch (sortOrder)
+            ViewBag.ArtistSort = sort == "Artist" ? "ArtDesc" : "Artist";
+            ViewBag.GenreSort = sort == "Genre" ? "GenreDesc" : "Genre";
+            ViewBag.PriceSort = sort == "Price" ? "PriceDesc" : "Price";
+            ViewBag.LikesSort = sort == "Likes" ? "LikesDesc" : "Likes";
+            var albums = db.Albums.Include(a => a.Artist).Include(a => a.Genre).ToList();
+            if (!string.IsNullOrEmpty(search))
             {
-                case "album_name":
-                    albums = albums.OrderByDescending(a => a.Title);
+                ViewBag.Search = search;
+                albums = db.Albums.Where(a => a.Title.Contains(search) || a.Artist.Name.Contains(search) || a.Genre.Name.Contains(search)).ToList();
+            }
+            switch (sort)
+            {
+                case "ArtDesc":
+                    albums = albums.OrderByDescending(a => a.Artist.Name).ToList();
                     break;
-                case "artist_name":
-                    albums = albums.OrderBy(a => a.Artist.Name);
+                case "Artist":
+                    albums = albums.OrderBy(a => a.Artist.Name).ToList();
                     break;
-                case "name_artist":
-                    albums = albums.OrderByDescending(a => a.Artist.Name);
+                case "GenreDesc":
+                    albums = albums.OrderByDescending(a => a.Genre.Name).ToList();
                     break;
-                case "genre_name":
-                    albums = albums.OrderBy(a => a.Genre.Name);
+                case "Genre":
+                    albums = albums.OrderBy(a => a.Genre.Name).ToList();
                     break;
-                case "name_genre":
-                    albums = albums.OrderByDescending(a => a.Genre.Name);
+                case "PriceDesc":
+                    albums = albums.OrderByDescending(a => a.Price).ToList();
                     break;
-                case "price_amnt":
-                    albums = albums.OrderBy(a => a.Price);
+                case "Price":
+                    albums = albums.OrderBy(a => a.Price).ToList();
                     break;
-                case "amnt_price":
-                    albums = albums.OrderByDescending(a => a.Price);
+                case "LikesDesc":
+                    albums = albums.OrderByDescending(a => a.Likes).ToList();
                     break;
-                default:
-                    albums = albums.OrderBy(a => a.Title);
+                case "Likes":
+                    albums = albums.OrderBy(a => a.Likes).ToList();
                     break;
             }
-           
-            
-            return View(albums.ToList());
-        }
-        [HttpPost]
-        public IActionResult Likes(int id)
-        {
-            
-                var album = _context.Albums.SingleOrDefault(a => a.AlbumID == id);
-                album.Likes++;
-                _context.Albums.Update(album);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            
+            return View(albums);
         }
         public IActionResult Create()
         {
-            ViewBag.ArtistID = new SelectList(_context.Artists, "ArtistID", "Name");
-            ViewBag.GenreID = new SelectList(_context.Genres, "GenreID", "Name");
+            ViewBag.Artists = new SelectList(db.Artists.ToList(), "ArtistID", "Name");
+            ViewBag.Genres = new SelectList(db.Genres.ToList(), "GenreID", "Name");
             return View();
+
         }
-
         [HttpPost]
-
-        public IActionResult Create(Album album)
-
+        public IActionResult Create(Album album, string NewArtist, string NewGenre)
         {
-            if (album.ArtistID != null && album.ArtistID != 0)
+            if (db.Artists.Any(a => a.Name == NewArtist))
             {
-                ModelState.Remove("Artist.Name");
-                album.Artist = null;
+                album.ArtistID = db.Artists.SingleOrDefault(a => a.Name == NewArtist).ArtistID;
             }
-
-            if (album.GenreID != null && album.GenreID != 0)
+            if (db.Genres.Any(a => a.Name == NewGenre))
             {
-                ModelState.Remove("Genre.Name");
-                album.Genre = null;
+                album.GenreID = db.Artists.SingleOrDefault(a => a.Name == NewArtist).ArtistID;
+            }
+            if (string.IsNullOrEmpty(NewArtist) && album.ArtistID == 0)
+            {
+                ModelState.AddModelError("ArtistID", "Artist is required!");
+            }
+            if (string.IsNullOrEmpty(NewGenre) && album.GenreID == 0)
+            {
+                ModelState.AddModelError("GenreID", "Genre is required!");
+            }
+            if (!string.IsNullOrEmpty(NewArtist) && !db.Artists.Any(a => a.Name == NewArtist))
+            {
+                db.Artists.Add(new Artist { Name = NewArtist });
+                db.SaveChanges();
+                album.ArtistID = db.Artists.SingleOrDefault(a => a.Name == NewArtist).ArtistID;
+            }
+            if (!string.IsNullOrEmpty(NewGenre) && !db.Genres.Any(a => a.Name == NewGenre))
+            {
+                db.Genres.Add(new Genre { Name = NewGenre });
+                db.SaveChanges();
+                album.GenreID = db.Genres.SingleOrDefault(a => a.Name == NewGenre).GenreID;
             }
             if (ModelState.IsValid)
             {
-                var albumDuplicate = _context.Albums.FirstOrDefault(a => a.Title.ToLower() == album.Title.ToLower() && a.ArtistID == album.ArtistID);
-                if (albumDuplicate == null)
-                {
-                    _context.Albums.Add(album);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ViewBag.DuplicationValidation = "Album already exists";
-                    ViewBag.ArtistList = new SelectList(_context.Artists, "ArtistID", "Name");
-                    ViewBag.GenreList = new SelectList(_context.Genres, "GenreID", "Name");
-                    return View(album);
-                }
+                db.Add(album);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            ViewBag.ArtistList = new SelectList(_context.Artists, "ArtistID", "Name");
-            ViewBag.GenreList = new SelectList(_context.Genres, "GenreID", "Name");
+            ViewBag.Artists = new SelectList(db.Artists.ToList(), "ArtistID", "Name");
+            ViewBag.Genres = new SelectList(db.Genres.ToList(), "GenreID", "Name");
+            return View();
+        }
+        public IActionResult Details(int? id)
+        {
+            var album = db.Albums.Include(a => a.Artist).Include(a => a.Genre).SingleOrDefault(a => a.AlbumID == id);
+            ViewBag.Suggest = db.Albums.Where(a => (a.ArtistID == album.ArtistID || a.GenreID == album.GenreID) && a.Likes >= 2 && a.AlbumID != album.AlbumID).Take(5);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+            return View(album);
+        }
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var album = db.Albums.Include(a => a.Artist).Include(a => a.Genre).SingleOrDefault(a => a.AlbumID == id);
+            ViewBag.Artists = new SelectList(db.Artists.ToList(), "ArtistID", "Name");
+            ViewBag.Genres = new SelectList(db.Genres.ToList(), "GenreID", "Name");
+            if (album == null)
+            {
+                return NotFound();
+            }
+            return View(album);
+        }
+        [HttpPost]
+        public ActionResult Edit(Album album)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Update(album);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.Artists = new SelectList(db.Artists.ToList(), "ArtistID", "Name");
+            ViewBag.Genres = new SelectList(db.Genres.ToList(), "GenreID", "Name");
             return View(album);
         }
         public IActionResult Delete(int? id)
         {
-            ViewBag.ArtistID = new SelectList(_context.Artists, "ArtistID", "Name");
-            ViewBag.GenreID = new SelectList(_context.Genres, "GenreID", "Name");
             if (id == null)
             {
                 return NotFound();
             }
-            Album album = _context.Albums.Include(a => a.Artist).Include(a => a.Genre).SingleOrDefault(a => a.AlbumID == id);
+            var album = db.Albums.Include(a => a.Artist).Include(a => a.Genre).SingleOrDefault(a => a.AlbumID == id);
             if (album == null)
             {
                 return NotFound();
             }
             return View(album);
-
         }
-
         [HttpPost]
         public IActionResult Delete(Album album)
         {
-            
-                _context.Albums.Remove(album);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-
+            db.Remove(album);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
-        public IActionResult Details(int? id)
-        {
 
+        public IActionResult Like(int? id)
+        {
             if (id == null)
             {
                 return NotFound();
             }
-            Album album = _context.Albums.Include(a => a.Artist).Include(a => a.Genre).SingleOrDefault(a => a.AlbumID == id);
+            var album = db.Albums.SingleOrDefault(a => a.AlbumID == id);
             if (album == null)
             {
                 return NotFound();
             }
-            ViewBag.AlbumsList = _context.Albums.Where(a => a.AlbumID == album.AlbumID);
-            return View(album);
-
-        }
-        public IActionResult Edit(int? id)
-        {
-            ViewBag.ArtistID = new SelectList(_context.Artists, "ArtistID", "Name");
-            ViewBag.GenreID = new SelectList(_context.Genres, "GenreID", "Name");
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Album album = _context.Albums.SingleOrDefault(a => a.AlbumID == id);
-            if (album == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.AlbumsList = _context.Albums.Where(a => a.AlbumID == album.AlbumID);
-            return View(album);
-
-        }
-        [HttpPost]
-        public IActionResult Edit(Album album)
-        {
-            
-            if (ModelState.IsValid)
-            {
-                _context.Albums.Update(album);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.ArtistID = new SelectList(_context.Artists, "ArtistID", "Name");
-            ViewBag.GenreID = new SelectList(_context.Genres, "GenreID", "Name");
-            return View(album);
+            album.Likes++;
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

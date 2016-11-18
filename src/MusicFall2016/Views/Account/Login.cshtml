@@ -1,0 +1,34 @@
+﻿@model MusicFall2016.ViewModel.LoginViewModel
+
+@{ViewData["Title"] = "Login"; }
+
+<h2>Log in</h2>
+<h5>Type in username and password to login</h5>
+<br />
+<form class="form-horizontal" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+    <fieldset>
+        <div class="form-group">
+            <label for="Email" class="col-md-2 control-label">Email</label>
+            <div class="col-md-10">
+                <input asp-for="Email" type="text" class="form-control">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Password" class="col-md-2 control-label">Password</label>
+            <div class="col-md-10">
+                <input asp-for="Password" type="password" class="form-control">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-md-10 col-md-offset-2">
+            <button type="submit" class="btn btn-primary btn-danger">Log in</button>
+        </div>
+    </div>
+</form>
+<p>
+    <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
+</p>
