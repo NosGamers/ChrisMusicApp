@@ -17,7 +17,7 @@ namespace MusicFall2016.Models
     }
     public class MusicDbContext : IdentityDbContext<AppUser>
     {
-        public MusicDbContext(DbContextOptions<MusicDbContext> options)
+        public MusicDbContext(DbContextOptions<MusicDbContext> options) 
             : base(options)
         {
         }

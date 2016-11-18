@@ -32,11 +32,11 @@
 <div>
     <h4>Check out these suggested albums:</h4>
     <ul>
-        @foreach (var album in ViewBag.Suggest)
+            @foreach (var album in ViewBag.Suggest)
             {
-            <li>@album.Title</li>
-        }
-    </ul>
+                <li>@album.Title</li>
+            }
+</ul>
 </div>
 <br />
 <form asp-action="Like" asp-route-id="@Model.AlbumID" class="inline">
@@ -45,3 +45,4 @@
 <a asp-action="Edit" asp-route-id="@Model.AlbumID" class="btn btn-primary btn-danger">Edit</a> &nbsp
 <a class="btn btn-primary btn-default" asp-controller="Playlists" asp-action="AddAlbum" asp-route-id="@Model.AlbumID">Playlist+</a> &nbsp
 <a asp-action="Index" class="btn btn-default">Back to list</a>
+

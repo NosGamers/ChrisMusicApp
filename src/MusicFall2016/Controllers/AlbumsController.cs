@@ -68,7 +68,7 @@ namespace MusicFall2016.Controllers
         [HttpPost]
         public IActionResult Create(Album album, string NewArtist, string NewGenre)
         {
-            if (db.Artists.Any(a => a.Name == NewArtist))
+            if(db.Artists.Any(a => a.Name == NewArtist))
             {
                 album.ArtistID = db.Artists.SingleOrDefault(a => a.Name == NewArtist).ArtistID;
             }
@@ -114,7 +114,7 @@ namespace MusicFall2016.Controllers
             {
                 return NotFound();
             }
-
+            
             if (album == null)
             {
                 return NotFound();

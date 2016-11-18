@@ -3,13 +3,13 @@
     ViewData["Title"] = "Albums";
 }
 <h2>Album List</h2>
-<div><a asp-action="Create" class="btn btn-danger">Add an Album</a></div>
+<div><a asp-action="Create" class="btn btn-danger">Add Album</a></div>
 <br />
 <form class="form-inline">
     <div class="form-group">
-        <input type="search" name="search" />
+        <input type="search" name="search"/>
     </div>
-    <button type="submit" class="btn btn-info btn-sm">Search your music</button>
+    <button type="submit" class="btn btn-info btn-sm">Search</button>
     @if (!string.IsNullOrEmpty(ViewBag.Search))
     {
         <a asp-action="Index" class="btn btn-sm btn-danger">Back to List</a>
@@ -39,7 +39,7 @@
                 <form asp-action="Like" asp-route-id="@album.AlbumID" class="inline">
                     <button type="submit" class="btn btn-sm btn-default">Like</button>
                 </form>|
-                <a class="btn btn-sm btn-default" asp-controller="Playlists" asp-action="AddAlbum" asp-route-id="@album.AlbumID">Add to Playlist</a> |
+                <a class="btn btn-sm btn-default" asp-controller="Playlists" asp-action="AddAlbum" asp-route-id="@album.AlbumID">Playlist+</a> |
                 <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@album.AlbumID">Details</a> |
                 <a class="btn btn-sm btn-default" asp-action="Edit" asp-route-id="@album.AlbumID">Edit</a> |
                 <a class="btn btn-sm btn-default" asp-action="Delete" asp-route-id="@album.AlbumID">Delete</a>
@@ -47,3 +47,5 @@
         </tr>
     }
 </table>
+
+

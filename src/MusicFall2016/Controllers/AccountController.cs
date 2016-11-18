@@ -19,7 +19,7 @@ namespace MusicFall2016.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
@@ -35,7 +35,7 @@ namespace MusicFall2016.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new AppUser { UserName = model.Email, DateJoined = System.DateTime.Now, Email = model.Email };
+                var user = new AppUser { UserName = model.Email, DateJoined = System.DateTime.Now, Email = model.Email};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

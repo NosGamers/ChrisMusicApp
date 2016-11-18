@@ -1,0 +1,19 @@
+﻿@model MusicFall2016.Models.Playlist
+<h2>Rename Playlist</h2>
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <input type="hidden" asp-for="PlaylistID">
+        <div class="form-group">
+            <label for="Title" class="col-md-2 control-label">Name</label>
+            <div class="col-md-10">
+                <input asp-for="Name" type="text" class="form-control">
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-md-10 col-md-offset-2">
+            <button type="submit" class="btn btn-primary btn-danger">Submit</button>
+            <a asp-action="Index" class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</form>

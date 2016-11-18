@@ -9,11 +9,11 @@ namespace MusicFall2016.Models
     public class Album
     {
         public int AlbumID { get; set; }
-        [Required(ErrorMessage = "Please set a title")]
+        [Required(ErrorMessage = "Title is required!")]
         public string Title { get; set; }
-        [Required(ErrorMessage = "Please set a price")]
+        [Required(ErrorMessage = "Price is required!")]
         [Range(0.01, 100.00,
-        ErrorMessage = "Price must be greater than $0.01 and less than $100.00.")]
+        ErrorMessage = "Price must be between $0.01 and $100.00.")]
         public decimal Price { get; set; }
         // Foreign key
         public int ArtistID { get; set; }
